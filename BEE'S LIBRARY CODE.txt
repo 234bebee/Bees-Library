@@ -1,0 +1,308 @@
+CREATE DATABASE `Bee's Library`;
+USE `Bee's Library`;
+/*====================TABLES====================*/
+CREATE TABLE Publisher (
+PublisherName VARCHAR(50) PRIMARY KEY NOT NULL,
+PublisherAddress VARCHAR(200) NOT NULL,
+PublisherPhone INT(11)
+);
+
+CREATE TABLE Books (
+BookID INT NOT NULL AUTO_INCREMENT,
+BookTitle VARCHAR(100) NOT NULL,
+PublisherName VARCHAR(50) NOT NULL,
+PRIMARY KEY (BookID),
+FOREIGN KEY (PublisherName) REFERENCES Publisher(PublisherName)
+);
+
+CREATE TABLE LibraryBranch (
+BranchID INT NOT NULL AUTO_INCREMENT,
+BranchName VARCHAR(100) NOT NULL,
+BranchAddress VARCHAR(200) NOT NULL,
+PRIMARY KEY (BranchID)
+);
+
+CREATE TABLE Authors (
+AuthorID INT NOT NULL AUTO_INCREMENT,
+BookID INT NOT NULL,
+AuthorName VARCHAR(100),
+PRIMARY KEY (AuthorID),
+FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+
+CREATE TABLE BookLoans (
+LoanID INT NOT NULL AUTO_INCREMENT,
+BookID INT NOT NULL,
+BranchID INT NOT NULL,
+CardNo INT NOT NULL,
+DateOut VARCHAR(50),
+DateDue VARCHAR(50) NULL,
+PRIMARY KEY (LoanID),
+FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+
+CREATE TABLE Borrowers (
+CardNo INT NOT NULL AUTO_INCREMENT,
+BorrowerName VARCHAR(50) NOT NULL,
+BorrowerAddress VARCHAR(200) NOT NULL,
+BorrowerPhone INT(50) NOT NULL,
+PRIMARY KEY (CardNo)
+);
+
+CREATE TABLE BookCopies (
+CopiesID INT NOT NULL AUTO_INCREMENT,
+BookID INT NOT NULL,
+BranchID INT NOT NULL,
+No_of_Copies INT NOT NULL,
+PRIMARY KEY (CopiesID),
+FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+
+CREATE INDEX DATEOUT ON BookLoans(DateOut);
+CREATE INDEX DATEDUE ON BookLoans(DateDue);
+
+/*====================END TABLES====================*/
+
+*=================POPULATING TABLES=================*/
+
+INSERT INTO Publisher (PublisherName, PublisherAddress, PublisherPhone)
+VALUES ('Rubylyn', 'Sunnyvale Estate, Abuja', 0811012346);
+INSERT INTO Publisher (PublisherName, PublisherAddress, PublisherPhone)
+VALUES ('PrintAID', 'Babcock University, Ilishan-Remo', 0701345678), ('Cascade', 'Cascade Towers, Ibadan', 0901245675),
+ ('LivingSpring', '17, Adebanjo Close, Maryland', 0813456789), ('Movers n Shakers', 'Premier House, Jericho, Abeokuta', 0902345789),
+ ('So Garrison Co.', 'Garrison House, Akala-Way, Ibadan', 0701235678)
+ ; 
+ 
+mysql> SELECT * FROM Publisher;
++------------------+-----------------------------------+----------------+
+| PublisherName    | PublisherAddress                  | PublisherPhone |
++------------------+-----------------------------------+----------------+
+| Cascade          | Cascade Towers, Ibadan            |      901245675 |
+| LivingSpring     | 17, Adebanjo Close, Maryland      |      813456789 |
+| Movers n Shakers | Premier House, Jericho, Abeokuta  |      902345789 |
+| PrintAID         | Babcock University, Ilishan-Remo  |      701345678 |
+| Rubylyn          | Sunnyvale Estate, Abuja           |      811012346 |
+| So Garrison Co.  | Garrison House, Akala-Way, Ibadan |      701235678 |
++------------------+-----------------------------------+----------------+
+
+ INSERT INTO Books (BookTitle, PublisherName)
+ VALUES ('Game Changer', 'Rubylyn'), ('Thee Sauce', 'Rubylyn'), ('Aqualit', 'PrintAID'), ('OmniSucre', 'So Garrison Co.'), ('How are you?', 'PrintAID'),
+ ('I am  good', 'Rubylyn'), ('Who is Harrie?', 'Cascade'), ('Turning Point', 'LivingSpring'), ('Rock Paper', 'Cascade'), ('Scissors', 'Movers n Shakers'),
+ ('Glee', 'So Garrison Co.'), ('Better Days Ahead', 'Cascade'), ('Ma Fo', 'Movers n Shakers'), ('Zooma', 'Cascade'), ('Bee, you are a star!', 'LivingSpring'),
+ ('Yassss!', 'So Garrison Co.'), ('Feather Weight', 'PrintAID'), ('Rocky', 'Movers n Shakers');
+ INSERT INTO Books (BookTitle, PublisherName)
+ VALUES ('The American Dream', 'So Garrison Co.'), ('A day at the Mall', 'Cascade');
+
+mysql> SELECT * FROM BOOKS;
++--------+----------------------+------------------+
+| BookID | BookTitle            | PublisherName    |
++--------+----------------------+------------------+
+|      1 | Game Changer         | Rubylyn          |
+|      2 | Thee Sauce           | Rubylyn          |
+|      3 | Aqualit              | PrintAID         |
+|      4 | OmniSucre            | So Garrison Co.  |
+|      5 | How are you?         | PrintAID         |
+|      6 | I am  good           | Rubylyn          |
+|      7 | Who is Harrie?       | Cascade          |
+|      8 | Turning Point        | LivingSpring     |
+|      9 | Rock Paper           | Cascade          |
+|     10 | Scissors             | Movers n Shakers |
+|     11 | Glee                 | So Garrison Co.  |
+|     12 | Better Days Ahead    | Cascade          |
+|     13 | Ma Fo                | Movers n Shakers |
+|     14 | Zooma                | Cascade          |
+|     15 | Bee, you are a star! | LivingSpring     |
+|     16 | Yassss!              | So Garrison Co.  |
+|     17 | Feather Weight       | PrintAID         |
+|     18 | Rocky                | Movers n Shakers |
+|     19 | The American Dream   | So Garrison Co.  |
+|     20 | A day at the Mall    | Cascade          |
++--------+----------------------+------------------+
+ 
+ INSERT INTO LibraryBranch (BranchName, BranchAddress)
+ VALUES ('Marie Bay', 'Cresent Road, Ikeja'), ('Beeswax', 'La Rue Ribadu, Paris'), ('Headquarters', 'North-West University, Calgary');
+ 
+mysql> SELECT * FROM LibraryBranch;
++----------+--------------+--------------------------------+
+| BranchID | BranchName   | BranchAddress                  |
++----------+--------------+--------------------------------+
+|        1 | Marie Bay    | Cresent Road, Ikeja            |
+|        2 | Beeswax      | La Rue Ribadu, Paris           |
+|        3 | Headquarters | North-West University, Calgary |
++----------+--------------+--------------------------------+
+
+ INSERT INTO Borrowers (BorrowerName, BorrowerAddress, BorrowerPhone)
+ Values ('Jane Dough', 'Room 7, Mufasa Hall', 0901945678), ('Ademilola Adeola', 'Room 11, Charity Hall', 0702838998), ('Aisha Audu', 'Room 4, Krilly Hall', 0909997545),
+ ('Femi John', 'House 12, Akinwale street, Ikeja', 0812475612), ('Zayn Malik', 'Directioners Hall', 0905479284);
+ 
+mysql> SELECT * FROM Borrowers;
++--------+------------------+----------------------------------+---------------+
+| CardNo | BorrowerName     | BorrowerAddress                  | BorrowerPhone |
++--------+------------------+----------------------------------+---------------+
+|      1 | Jane Dough       | Room 7, Mufasa Hall              |     901945678 |
+|      2 | Ademilola Adeola | Room 11, Charity Hall            |     702838998 |
+|      3 | Aisha Audu       | Room 4, Krilly Hall              |     909997545 |
+|      4 | Femi John        | House 12, Akinwale street, Ikeja |     812475612 |
+|      5 | Zayn Malik       | Directioners Hall                |     905479284 |
++--------+------------------+----------------------------------+---------------+
+
+INSERT INTO BookLoans
+(BookID, BranchID, CardNo, DateOut, DateDue)
+VALUES (1, 2, 1, '2022/12/02', '2023/01/02');
+INSERT INTO BookLoans
+(BookID, BranchID, CardNo, DateOut, DateDue)
+VALUES (2, 2, 1, '2023/01/14', '2023/02/14'),
+(18, 2, 5, '2022/11/20', '2022/12/20'), (1, 3, 3, '2023/03/21', '2023/04/21'), 
+(10, 2, 1, '2022/12/04', '2023/01/04'), (10, 2, 1, '2023/04/05', '2023/05/05'),
+(12, 1, 4, '2023/01/19', '2023/02/19'), (15, 2, 5, '2022/10/09', '2022/11/09'),
+(5, 3, 3, '2022/10/15', '2022/11/15'), (7, 2, 1, '2023/05/11', '2023/06/11'),
+(8, 2, 1, '2023/01/14', '2023/02/14'), (11, 1, 4, '2023/05/11', '2023/06/11'),
+(13, 1, 4, '2022/10/16', '2022/11/16'), (1, 2, 5, '2022/10/09', '2022/11/09'),
+(13, 2, 1, '2023/01/14', '2023/02/14'), (7, 1, 4, '2023/07/24', '2023/08/24'),
+(15, 2, 5, '2023/07/12', '2023/08/12'), (8, 1, 4, '2023/03/09', '2023/04/09'),
+(3, 2, 1, '2023/01/30', '2023/03/02'), (4, 2, 1, '2023/04/09', '2023/05/09'),
+(5, 3, 3, '2022/09/19', '2022/10/19'), (5, 1, 4, '2023/01/19', '2023/02/19'),
+(12, 3, 3, '2022/10/16', '2022/11/16'), (14, 2, 1, '2023/01/17', '2023/02/17'),
+(16, 3, 3, '2022/09/09', '2022/10/09'), (20, 1, 4, '2022/12/25', '2023/01/25'),
+(19, 2, 1, '2022/07/21', '2022/08/21'), (17, 3, 3, '2023/04/05', '2023/05/05'),
+(16, 2, 1, '2023/04/19', '2023/05/19'), (6, 3, 3, '2022/04/16', '2022/05/16'),
+(9, 1, 4, '2022/09/19', '2022/10/19');
+
+mysql> SELECT * FROM BookLoans;
++--------+--------+----------+--------+------------+------------+
+| LoanID | BookID | BranchID | CardNo | DateOut    | DateDue    |
++--------+--------+----------+--------+------------+------------+
+|      1 |      1 |        2 |      1 | 2022/12/02 | 2023/01/02 |
+|      2 |      1 |        2 |      1 | 2022/12/02 | 2023/01/02 |
+|      3 |      2 |        2 |      1 | 2023/01/14 | 2023/02/14 |
+|      4 |     18 |        2 |      5 | 2022/11/20 | 2022/12/20 |
+|      5 |      1 |        3 |      3 | 2023/03/21 | 2023/04/21 |
+|      6 |     10 |        2 |      1 | 2022/12/04 | 2023/01/04 |
+|      7 |     10 |        2 |      1 | 2023/04/05 | 2023/05/05 |
+|      8 |     12 |        1 |      4 | 2023/01/19 | 2023/02/19 |
+|      9 |     15 |        2 |      5 | 2022/10/09 | 2022/11/09 |
+|     10 |      5 |        3 |      3 | 2022/10/15 | 2022/11/15 |
+|     11 |      7 |        2 |      1 | 2023/05/11 | 2023/06/11 |
+|     12 |      8 |        2 |      1 | 2023/01/14 | 2023/02/14 |
+|     13 |     11 |        1 |      4 | 2023/05/11 | 2023/06/11 |
+|     14 |     13 |        1 |      4 | 2022/10/16 | 2022/11/16 |
+|     15 |      1 |        2 |      5 | 2022/10/09 | 2022/11/09 |
+|     16 |     13 |        2 |      1 | 2023/01/14 | 2023/02/14 |
+|     17 |      7 |        1 |      4 | 2023/07/24 | 2023/08/24 |
+|     18 |     15 |        2 |      5 | 2023/07/12 | 2023/08/12 |
+|     19 |      8 |        1 |      4 | 2023/03/09 | 2023/04/09 |
+|     20 |      3 |        2 |      1 | 2023/01/30 | 2023/03/02 |
+|     21 |      4 |        2 |      1 | 2023/04/09 | 2023/05/09 |
+|     22 |      5 |        3 |      3 | 2022/09/19 | 2022/10/19 |
+|     23 |      5 |        1 |      4 | 2023/01/19 | 2023/02/19 |
+|     24 |     12 |        3 |      3 | 2022/10/16 | 2022/11/16 |
+|     25 |     14 |        2 |      1 | 2023/01/17 | 2023/02/17 |
+|     26 |     16 |        3 |      3 | 2022/09/09 | 2022/10/09 |
+|     27 |     20 |        1 |      4 | 2022/12/25 | 2023/01/25 |
+|     28 |     19 |        2 |      1 | 2022/07/21 | 2022/08/21 |
+|     29 |     17 |        3 |      3 | 2023/04/05 | 2023/05/05 |
+|     30 |     16 |        2 |      1 | 2023/04/19 | 2023/05/19 |
+|     31 |      6 |        3 |      3 | 2022/04/16 | 2022/05/16 |
+|     32 |      9 |        1 |      4 | 2022/09/19 | 2022/10/19 |
++--------+--------+----------+--------+------------+------------+
+
+INSERT INTO BookCopies (
+BookID, BranchID, No_of_Copies)
+VALUES (1, 3, 5), (1, 2, 5), (2, 2, 5), (3, 2, 5), (4, 2, 5), (5, 3, 5), (5, 1, 5),
+(6, 3, 5), (7, 2, 5), (7, 1, 5), (8, 1, 5), (8, 2, 5), (9, 1, 5), (10, 2, 5), (11, 1, 5),
+(12, 3, 5), (12, 1, 5), (13, 1, 5), (13, 2, 5), (14, 2, 5), (15, 2, 5), (16, 2, 5), (17, 3, 5),
+(17, 3, 5), (18, 2, 5), (19, 2, 5), (20, 1, 5);
+
+mysql> SELECT * FROM BookCopies;
++----------+--------+----------+--------------+
+| CopiesID | BookID | BranchID | No_of_Copies |
++----------+--------+----------+--------------+
+|        1 |      1 |        3 |            5 |
+|        2 |      1 |        2 |            5 |
+|        3 |      2 |        2 |            5 |
+|        4 |      3 |        2 |            5 |
+|        5 |      4 |        2 |            5 |
+|        6 |      5 |        3 |            5 |
+|        7 |      5 |        1 |            5 |
+|        8 |      6 |        3 |            5 |
+|        9 |      7 |        2 |            5 |
+|       10 |      7 |        1 |            5 |
+|       11 |      8 |        1 |            5 |
+|       12 |      8 |        2 |            5 |
+|       13 |      9 |        1 |            5 |
+|       14 |     10 |        2 |            5 |
+|       15 |     11 |        1 |            5 |
+|       16 |     12 |        3 |            5 |
+|       17 |     12 |        1 |            5 |
+|       18 |     13 |        1 |            5 |
+|       19 |     13 |        2 |            5 |
+|       20 |     14 |        2 |            5 |
+|       21 |     15 |        2 |            5 |
+|       22 |     16 |        2 |            5 |
+|       23 |     17 |        3 |            5 |
+|       24 |     17 |        3 |            5 |
+|       25 |     18 |        2 |            5 |
+|       26 |     19 |        2 |            5 |
+|       27 |     20 |        1 |            5 |
++----------+--------+----------+--------------+
+
+INSERT INTO Authors (
+BookID, AuthorName)
+VALUES (1, 'Dr Dora'), (2, 'Rubi Oke'), (3, 'Harrie Mannie'), (4, 'Bees Wax'), (5, 'Vic Vera'),
+(6, 'Axle Adder'), (7, 'Suzie Uzzie'), (8, 'Iffy Dorcas'), (9, 'Will Iam'), (10, 'Sawyer Sawyeer'),
+(11, 'Steve Adam'), (12, 'Chuck Bart'), (13, 'Ginny Georgia'), (14, 'Lois Griffin'), (15, 'Patrick Ken'),
+(16, 'Topher Smith'), (17, 'Doug Silva'), (18, 'George Martini'), (19, 'Fun Size'), (20, 'Ally Austin');
+
+mysql> SELECT * FROM Authors;
++----------+--------+----------------+
+| AuthorID | BookID | AuthorName     |
++----------+--------+----------------+
+|        1 |      1 | Dr Dora        |
+|        2 |      2 | Rubi Oke       |
+|        3 |      3 | Harrie Mannie  |
+|        4 |      4 | Bees Wax       |
+|        5 |      5 | Vic Vera       |
+|        6 |      6 | Axle Adder     |
+|        7 |      7 | Suzie Uzzie    |
+|        8 |      8 | Iffy Dorcas    |
+|        9 |      9 | Will Iam       |
+|       10 |     10 | Sawyer Sawyeer |
+|       11 |     11 | Steve Adam     |
+|       12 |     12 | Chuck Bart     |
+|       13 |     13 | Ginny Georgia  |
+|       14 |     14 | Lois Griffin   |
+|       15 |     15 | Patrick Ken    |
+|       16 |     16 | Topher Smith   |
+|       17 |     17 | Doug Silva     |
+|       18 |     18 | George Martini |
+|       19 |     19 | Fun Size       |
+|       20 |     20 | Ally Austin    |
++----------+--------+----------------+
+
+/*====================END POPULATING TABLES====================*/
+
+/*===========================QUESTIONS========================*/
+
+/* 1. Retrieve the names of all borrowers who do not have any books checked out. */
+
+SELECT BorrowerName FROM Borrowers
+WHERE NOT EXISTS (SELECT * FROM BookLoans WHERE BookLoans.CardNo = Borrowers.CardNo);
++------------------+
+| BorrowerName     |
++------------------+
+| Ademilola Adeola |
++------------------+
+
+/* 2. What is the total number of books loaned per library branch? */
+SELECT LibraryBranch.BranchName, count(BookLoans.BranchID)
+FROM BookLoans INNER JOIN LibraryBranch ON BookLoans.BranchID = LibraryBranch.BranchID
+GROUP BY BranchName;
++--------------+---------------------------+
+| BranchName   | count(BookLoans.BranchID) |
++--------------+---------------------------+
+| Beeswax      |                        17 |
+| Headquarters |                         7 |
+| Marie Bay    |                         8 |
++--------------+---------------------------+
+
+ 
