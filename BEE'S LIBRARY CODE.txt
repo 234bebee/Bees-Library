@@ -305,4 +305,41 @@ GROUP BY BranchName;
 | Marie Bay    |                         8 |
 +--------------+---------------------------+
 
- 
+/* 3. Who wrote the book "Thee Sauce" and how many copies of the book are available in the Beeswax branch of the library? */
+SELECT AuthorName, BookTitle, No_of_Copies, BranchName
+FROM Authors INNER JOIN BookCopies ON Authors.BookID = BookCopies.BookID 
+INNER JOIN LibraryBranch ON BookCopies.BranchID = LibraryBranch.BranchID
+INNER JOIN Books ON Books.BookID = Authors.BookID
+WHERE BookTitle = 'Thee Sauce' AND LibraryBranch.BranchID = 2
+GROUP BY AuthorName, No_of_Copies;
+ +-----------+------------+--------------+------------+
+| AuthorName | BookTitle  | No_of_Copies | BranchName |
++------------+------------+--------------+------------+
+| Rubi Oke   | Thee Sauce |            5 | Beeswax    |
++------------+------------+--------------+------------+
+
+/* 4. Which of the publishers is located in "Ilishan-Remo" and which books where published by them? */
+SELECT Publisher.PublisherName, BookTitle, PublisherAddress
+FROM Publisher INNER JOIN Books ON Publisher.PublisherName = Books.PublisherName
+WHERE PublisherAddress LIKE '%Ilishan-Remo%';
++---------------+----------------+----------------------------------+
+| PublisherName | BookTitle      | PublisherAddress                 |
++---------------+----------------+----------------------------------+
+| PrintAID      | Aqualit        | Babcock University, Ilishan-Remo |
+| PrintAID      | How are you?   | Babcock University, Ilishan-Remo |
+| PrintAID      | Feather Weight | Babcock University, Ilishan-Remo |
++---------------+----------------+----------------------------------+
+
+/* 5. Which of the borrowers have more than 7 books checked out? Provide their names, addresses and phone numbers, with the number of books borrowed */
+SELECT BorrowerName, BorrowerAddress, BorrowerPhone, COUNT(BookLoans.CardNo) AS NumberOfBooks
+FROM Borrowers INNER JOIN BookLoans ON Borrowers.CardNo = BookLoans.CardNo
+GROUP BY BorrowerName, BorrowerAddress, BorrowerPhone
+HAVING COUNT(BookLoans.CardNO) > 7
+; 
++--------------+----------------------------------+---------------+---------------+
+| BorrowerName | BorrowerAddress                  | BorrowerPhone | NumberOfBooks |
++--------------+----------------------------------+---------------+---------------+
+| Jane Dough   | Room 7, Mufasa Hall              |     901945678 |            13 |
+| Femi John    | House 12, Akinwale street, Ikeja |     812475612 |             8 |
++--------------+----------------------------------+---------------+---------------+
+
